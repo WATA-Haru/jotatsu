@@ -80,6 +80,15 @@ howWhatWhy/                  ← vault ルート
 - **frontmatter**: `status / started / last-touched / cadence / dose / tags`（cadence・dose は稽古系のみ）。
 - **促し(nudge)**: ダッシュボードは pull。停滞・WIP超過の push は週次エージェント、日次の稽古は外部リマインダー。
 
+## 捕捉（inbox）と整理を分ける
+
+疲れているときに全ルールを守るのは無理。だから捕捉と整理を分ける（[[adr]] ADR-0013）。
+
+- **捕捉**: `inbox.md` に時刻付きで1行放り込む。**ルールなし。** how/what/why/learn を考えない。
+- **整理**: 後で各行を project の how/learn へ振り分け／新 project 化／principle 化／**削除**。
+- **inbox は通り抜ける場所**。溜めない。**7日**超の未処理は処理 or 削除（月曜の点検が push で促す）。
+- 走り書きは消耗品。解読不能なら捨てるのが正解。
+
 ## ADR（why）の運用
 
 - **テンプレート**: Nygard 版（`Status` / `Date` / `Context` / `Decision` / `Consequences`）。
