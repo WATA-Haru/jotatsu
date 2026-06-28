@@ -36,6 +36,20 @@ for idx in "$VAULT"/projects/*/index.md; do
   fi
 done
 
+# --- inbox (capture buffer) check ---
+INBOX="$VAULT/inbox.md"
+INBOX_STALE_DAYS=7
+inbox_count=0
+inbox_oldest=""
+inbox_oldest_days=""
+if [ -f "$INBOX" ]; then
+  inbox_count=$(grep -cE '^- [0-9]{4}-[0-9]{2}-[0-9]{2}' "$INBOX" || true)
+  inbox_oldest=$(grep -E '^- [0-9]{4}-[0-9]{2}-[0-9]{2}' "$INBOX" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort | head -1 || true)
+  if [ -n "$inbox_oldest" ] && t=$(date -d "$inbox_oldest" +%s 2>/dev/null); then
+    inbox_oldest_days=$(( (now - t) / 86400 ))
+  fi
+fi
+
 {
   echo "# Portfolio review — $(date '+%Y-%m-%d %H:%M')"
   echo
@@ -50,13 +64,20 @@ done
   echo
   echo "## ⚠ 停滞（active かつ ${STALE_DAYS}日超ノータッチ）"
   if [ -n "$stale_lines" ]; then printf "%s" "$stale_lines"; else echo "（なし）"; fi
+  echo
+  echo "## 📥 Inbox: ${inbox_count} 件未処理"
+  if [ -n "$inbox_oldest_days" ] && [ "$inbox_oldest_days" -gt "$INBOX_STALE_DAYS" ]; then
+    echo
+    echo "⚠ 最古 ${inbox_oldest_days}日（${inbox_oldest}）。${INBOX_STALE_DAYS}日超 → **処理 or 削除**して inbox を空にすること。"
+  fi
 } > "$OUT"
 
 echo "wrote: $OUT"
 
 # optional desktop push (if available)
 if command -v notify-send >/dev/null 2>&1; then
-  msg="active ${active}/${WIP_LIMIT}"
+  msg="active ${active}/${WIP_LIMIT} ・inbox ${inbox_count}"
   [ "$active" -gt "$WIP_LIMIT" ] && msg="${msg} ・抱えすぎ⚠"
+  { [ -n "$inbox_oldest_days" ] && [ "$inbox_oldest_days" -gt "$INBOX_STALE_DAYS" ]; } && msg="${msg} ・inbox滞留⚠"
   notify-send "howWhatWhy portfolio" "$msg" || true
 fi
