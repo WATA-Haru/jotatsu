@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# howWhatWhy: install the portfolio review (WIP / stalled check) as a systemd
+# jotatsu: install the portfolio review (WIP / stalled check) as a systemd
 # user timer. Runs every Monday 09:00 (Persistent=true catches missed runs).
-# Re-runnable. Uninstall: systemctl --user disable --now howwhatwhy-portfolio.timer
+# Re-runnable. Uninstall: systemctl --user disable --now jotatsu-portfolio.timer
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -16,18 +16,18 @@ fi
 chmod +x "$REVIEW_SH"
 mkdir -p "$UNIT_DIR"
 
-cat > "$UNIT_DIR/howwhatwhy-portfolio.service" <<EOF
+cat > "$UNIT_DIR/jotatsu-portfolio.service" <<EOF
 [Unit]
-Description=howWhatWhy portfolio review (WIP / stalled check)
+Description=jotatsu portfolio review (WIP / stalled check)
 
 [Service]
 Type=oneshot
 ExecStart=$REVIEW_SH
 EOF
 
-cat > "$UNIT_DIR/howwhatwhy-portfolio.timer" <<'EOF'
+cat > "$UNIT_DIR/jotatsu-portfolio.timer" <<'EOF'
 [Unit]
-Description=Run howWhatWhy portfolio review every Monday 09:00
+Description=Run jotatsu portfolio review every Monday 09:00
 
 [Timer]
 OnCalendar=Mon *-*-* 09:00:00
@@ -38,8 +38,8 @@ WantedBy=timers.target
 EOF
 
 systemctl --user daemon-reload
-systemctl --user enable --now howwhatwhy-portfolio.timer
+systemctl --user enable --now jotatsu-portfolio.timer
 
 echo "installed. next scheduled run:"
-systemctl --user list-timers howwhatwhy-portfolio.timer --no-pager || true
-echo "uninstall: systemctl --user disable --now howwhatwhy-portfolio.timer"
+systemctl --user list-timers jotatsu-portfolio.timer --no-pager || true
+echo "uninstall: systemctl --user disable --now jotatsu-portfolio.timer"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# howWhatWhy portfolio review (operational layer / ADR-0012)
+# jotatsu portfolio review (operational layer / ADR-0012)
 # Deterministically scans projects/*/index.md frontmatter and reports
 # WIP-over-limit and stalled (active & untouched) projects. No AI; pure bash.
 # This is the push-side nudge for the tracker (the Dataview dashboard is pull).
@@ -79,5 +79,5 @@ if command -v notify-send >/dev/null 2>&1; then
   msg="active ${active}/${WIP_LIMIT} ・inbox ${inbox_count}"
   [ "$active" -gt "$WIP_LIMIT" ] && msg="${msg} ・抱えすぎ⚠"
   { [ -n "$inbox_oldest_days" ] && [ "$inbox_oldest_days" -gt "$INBOX_STALE_DAYS" ]; } && msg="${msg} ・inbox滞留⚠"
-  notify-send "howWhatWhy portfolio" "$msg" || true
+  notify-send "jotatsu portfolio" "$msg" || true
 fi

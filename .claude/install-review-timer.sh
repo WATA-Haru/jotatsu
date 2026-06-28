@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# howWhatWhy: install the layer-2 weekly review as a systemd user timer.
+# jotatsu: install the layer-2 weekly review as a systemd user timer.
 # Generates and enables a systemd --user service + timer that runs the weekly
 # review every Monday 10:00 (Persistent=true catches runs missed while the
 # machine was off). Re-runnable (idempotent).
-# Uninstall: systemctl --user disable --now howwhatwhy-review.timer
+# Uninstall: systemctl --user disable --now jotatsu-review.timer
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -20,18 +20,18 @@ mkdir -p "$UNIT_DIR"
 
 # service: the unit is instance-specific, so the absolute path is resolved at
 # install time (systemd does not expand env vars in ExecStart).
-cat > "$UNIT_DIR/howwhatwhy-review.service" <<EOF
+cat > "$UNIT_DIR/jotatsu-review.service" <<EOF
 [Unit]
-Description=howWhatWhy weekly learn.md review (promotion proposals)
+Description=jotatsu weekly learn.md review (promotion proposals)
 
 [Service]
 Type=oneshot
 ExecStart=$REVIEW_SH
 EOF
 
-cat > "$UNIT_DIR/howwhatwhy-review.timer" <<'EOF'
+cat > "$UNIT_DIR/jotatsu-review.timer" <<'EOF'
 [Unit]
-Description=Run howWhatWhy weekly review every Monday 10:00
+Description=Run jotatsu weekly review every Monday 10:00
 
 [Timer]
 OnCalendar=Mon *-*-* 10:00:00
@@ -42,11 +42,11 @@ WantedBy=timers.target
 EOF
 
 systemctl --user daemon-reload
-systemctl --user enable --now howwhatwhy-review.timer
+systemctl --user enable --now jotatsu-review.timer
 
 echo "installed. next scheduled run:"
-systemctl --user list-timers howwhatwhy-review.timer --no-pager || true
+systemctl --user list-timers jotatsu-review.timer --no-pager || true
 echo
 echo "tip: on a laptop, to let the job run even while logged out:"
 echo "       loginctl enable-linger \"\$USER\""
-echo "uninstall: systemctl --user disable --now howwhatwhy-review.timer"
+echo "uninstall: systemctl --user disable --now jotatsu-review.timer"

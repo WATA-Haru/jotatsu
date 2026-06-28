@@ -1,7 +1,8 @@
-# howWhatWhy
+# jotatsu
 
-ノートを「**認識のタイプ**」で物理的に隔離し、プロジェクトの達成に近づけるための、
-**展開可能なノート手法テンプレート**。
+プロジェクトを回して上達するための個人システム。
+中核は、ノートを「**認識のタイプ**」で物理的に隔離する手法 **howWhatWhyLearn**（how/what/why/learn）。
+捕捉・プロジェクト管理・原則の蒸留まで含む、展開可能なテンプレート。
 
 - 運用ルール: [[rule]] / 設計判断（ADR）: [[adr]] / 用語: [[glossary]]
 
@@ -27,7 +28,7 @@
 ## 構成
 
 ```
-howWhatWhy/
+jotatsu/                     ← vault ルート
 ├── README.md / rule.md / adr.md / glossary.md
 ├── dashboard.md              ← 運用トラッカー（Dataview, 要プラグイン）
 ├── principles/               ← learn から昇格した一般原則（フラット・リンク）

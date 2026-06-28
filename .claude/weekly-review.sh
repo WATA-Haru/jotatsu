@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# howWhatWhy weekly review agent (layer 2 / ADR-0008, ADR-0009)
+# jotatsu weekly review agent (layer 2 / ADR-0008, ADR-0009)
 # Reads all learn.md and outputs promotion proposals for principles/ as "proposal only".
 # Only read tools are allowed, so it can never modify the vault.
 set -euo pipefail
