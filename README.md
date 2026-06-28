@@ -3,97 +3,80 @@
 ノートを「**認識のタイプ**」で物理的に隔離し、プロジェクトの達成に近づけるための、
 **展開可能なノート手法テンプレート**。
 
-- 運用ルール: [[rule]]
-- 設計判断の記録（ADR）: [[adr]]
-- 用語集: [[glossary]]
+- 運用ルール: [[rule]] / 設計判断（ADR）: [[adr]] / 用語: [[glossary]]
+
+## 3つの層
+
+| 層 | 役割 | 置き場所 |
+|---|---|---|
+| 記録（過去） | 何をやった / 成功条件 / 判断 / 学び | `projects/<project>/` の how/what/why/learn |
+| 地図（案内） | 分類・横断・学習の地図 | タグ ＋ MOC（`maps/`） |
+| 運用（現在・未来） | 今アクティブか / 抱えすぎ / 頻度 | `index.md` frontmatter ＋ `dashboard.md` |
+
+各プロジェクトの `learn`（知見）は棚卸しを経て `principles/`（一般原則）へ**昇格**する。
 
 ## 4つの認識タイプ
 
 | ファイル | 認識タイプ | ソフト開発の対応物 |
 |---|---|---|
-| `how.md`   | 事実     | コードとその実行結果 |
+| `how.md`   | 事実     | コードと実行結果 |
 | `what.md`  | 達成条件 | テスト |
 | `why.md`   | 判断（ADR） | ADR（Nygard 版） |
-| `learn.md` | 知見     | lint・規約・harness・ポストモーテム |
-
-各プロジェクトで得た `learn`（知見）は、棚卸しを経て `principles/`（全プロジェクト
-横断の一般原則）へ**昇格**する。詳しくは [[rule]]。
+| `learn.md` | 知見     | lint・規約・ポストモーテム |
 
 ## 構成
 
 ```
 howWhatWhy/
-├── README.md                 ← これ
-├── rule.md / adr.md / glossary.md
-├── principles/               ← learn から昇格した一般原則
-├── template/                 ← how / what / why / learn の雛形
-├── reviews/                  ← 週次棚卸しの出力（自動生成）
-├── .claude/
-│   ├── weekly-review.sh          ← 層2: 週次棚卸しエージェント本体
-│   ├── weekly-review-prompt.md   ← その指示
-│   └── install-review-timer.sh   ← 層2 を systemd timer として有効化
-└── <project>/                ← how / what / why / learn
+├── README.md / rule.md / adr.md / glossary.md
+├── dashboard.md              ← 運用トラッカー（Dataview, 要プラグイン）
+├── principles/               ← learn から昇格した一般原則（フラット・リンク）
+├── maps/                     ← MOC（分類・案内の地図ノート）
+├── template/                 ← index / how / what / why / learn の雛形
+├── projects/                 ← プロジェクトのフラットな一覧（カテゴリでネストしない）
+│   └── <project>/
+│       ├── index.md          ← 表紙＋frontmatter（status, cadence, tags…）
+│       └── how / what / why / learn
+└── .claude/
+    ├── weekly-review.sh + install-review-timer.sh        ← 層2: learn→principles 昇格案（AI・提案のみ）
+    └── portfolio-review.sh + install-portfolio-timer.sh  ← 運用: WIP/停滞チェック（素のbash・push）
 ```
 
 ## 使い方
 
 ### 新しいプロジェクトを始める
 
-`template/` を複製してプロジェクト名のフォルダを作る:
-
 ```bash
-cp -r template "あなたのプロジェクト名"
+cp -r template "projects/あなたのプロジェクト名"
 ```
 
-あとは作業しながら 4 ファイルを埋める。`why.md` は ADR を `# ADR-NNNN: タイトル` で
-inline に並べ、増えたら `why/0001-*.md` に分割する（[[rule]] 参照）。
+`index.md` の frontmatter（status / started / last-touched / tags、稽古系なら cadence / dose）を埋め、
+how/what/why/learn を書いていく。
 
-## 知見の昇格と棚卸し（層1 / 層2）
+**粒度の判断**: 達成条件（what）があれば `projects/` のフォルダ、なければカテゴリ＝タグ／MOC。
 
-`principles/` を育てるエンジンが「棚卸し」。人間の意志に依存させないのがキモ。
+### 分類・整理
 
-- **層1（任意）**: プロジェクト完了時などに `learn.md` をざっと見て、自分で `principles/` へ。
-- **層2（自動・バックストップ）**: 毎週、エージェントが全 `learn.md` を読み、昇格案を
-  `reviews/` に出力する（**提案のみ・自動昇格しない**）。
+カテゴリ（frontend, 設計…）はフォルダにせず、`maps/` の MOC ノートと frontmatter のタグで表す。
+同じプロジェクトを複数の MOC が指せる（重複しない）。
 
-### 層2（週次棚卸し）の有効化
+### 運用トラッカー（dashboard.md）
 
-前提: Linux + systemd（user セッション）、`claude` CLI が使えること。
+Obsidian の **Dataview** プラグインを入れて `dashboard.md` を開くと、`projects/` を走査して
+「active一覧・停滞・WIP件数・全体俯瞰・backlog」が自動表示される。
+ルール: 同時 active は**上限5**、active で**14日**ノータッチは「停滞」。
 
-```bash
-bash .claude/install-review-timer.sh
-```
+## 自動化（2つの独立した関心事）
 
-これで以下が設定される:
+| 何 | すること | 起動 | 有効化 |
+|---|---|---|---|
+| **週次棚卸し** | 全 learn.md を読み principles 昇格案を出す（AI・提案のみ） | 月 10:00 | `bash .claude/install-review-timer.sh` |
+| **ポートフォリオ点検** | WIP超過・停滞を検出して push（素のbash・AI不要） | 月 09:00 | `bash .claude/install-portfolio-timer.sh` |
 
-- 毎週 **月曜 10:00** に `weekly-review.sh` が走り、`reviews/review-YYYY-MM-DD.md` に昇格案を出力。
-- `Persistent=true` のため、PC が寝ていて時刻を逃しても**次回起動時に実行**される。
-- エージェントには読み取り系ツールのみ渡すため、vault は**書き換えられない**（提案のみ）。
-
-補助コマンド:
-
-```bash
-# 今すぐ手動でテスト実行
-bash .claude/weekly-review.sh
-
-# 次回実行予定の確認
-systemctl --user list-timers howwhatwhy-review.timer
-
-# ノートPCで、ログアウト中も走らせたい場合
-loginctl enable-linger "$USER"
-
-# 停止・削除
-systemctl --user disable --now howwhatwhy-review.timer
-
-# スケジュール変更
-# ~/.config/systemd/user/howwhatwhy-review.timer の OnCalendar を編集し:
-systemctl --user daemon-reload
-```
+どちらも systemd user timer（`Persistent=true` ＝ 寝ていても次回起動時に取りこぼし実行）。
+出力は `reviews/`。停止は `systemctl --user disable --now <unit>.timer`。
 
 ## 実行環境とプライバシー
 
-- 当面は**ローカル実行 + Obsidian Sync**（紛失防止）。
-- 将来 always-on にするなら、**自宅サーバ（未使用ミニPC 等）+ Tailscale / WireGuard**。
-  外部公開・ssh ポート開放はしない。詳細は [[adr]] の ADR-0009。
-- 個人データを載せた**実運用 vault は公開リポジトリに push しない**こと
-  （このリポジトリは個人データを含まないテンプレート）。
+- 当面は**ローカル実行 + Obsidian Sync**。将来 always-on は**自宅サーバ + Tailscale / WireGuard**（[[adr]] ADR-0009）。
+- 個人データを載せた**実運用 vault は公開リポジトリに push しない**（このリポジトリはテンプレート）。
