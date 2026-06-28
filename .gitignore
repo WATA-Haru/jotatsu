@@ -1,0 +1,35 @@
+# === OS が生成するゴミ ===
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# === Obsidian ===
+# 端末依存・自動生成される状態は無視する。
+# テーマ・ホットキー等の共有したい設定（app.json, hotkeys.json 等）は追跡されたまま。
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/.cache
+# プラグインのローカルデータ（必要に応じて外す）
+.obsidian/plugins/*/data.json
+
+# Obsidian のゴミ箱
+.trash/
+
+# === Claude Code（端末ローカル設定） ===
+# スキル定義（.claude/skills, skills-lock.json）は共有したいので追跡する。
+.claude/settings.local.json
+
+# === エディタ ===
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# === 一時ファイル ===
+*.tmp
+*.bak
