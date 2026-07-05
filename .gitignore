@@ -33,3 +33,6 @@ desktop.ini
 # === 一時ファイル ===
 *.tmp
 *.bak
+
+projects/**/*
+!projects/.gitkeep
