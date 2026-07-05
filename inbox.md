@@ -1,7 +1,7 @@
 # Inbox — 摩擦ゼロの捕捉先
 
-思いついたら時刻付きで1行放り込む。**ルールなし**（how/what/why/learn を考えない）。
-後で project の how/learn へ振り分けるか、新 project を起こすか、principle にするか、**捨てる**。
+思いついたら時刻付きで1行放り込む。**ルールなし**（what/why/learn を考えない）。
+後で project の note/learn へ振り分けるか、新 project を起こすか、principle にするか、**捨てる**。
 **溜める場所ではなく通り抜ける場所。** 7日超の未処理は処理 or 削除（月曜のポートフォリオ点検が促す）。
 
 捕捉のショートカット（Obsidian）:

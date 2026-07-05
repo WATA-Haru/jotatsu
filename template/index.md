@@ -9,10 +9,10 @@ tags: []
 
 # <プロジェクト名>
 
-- [how](how.md) — 事実
 - [what](what.md) — 達成条件
 - [why](why.md) — 判断（ADR）
 - [learn](learn.md) — 知見
+- [note](note.md) — 作業ノート（生・自由記述）
 
 <!--
 status:       backlog / active / paused / done / dropped
